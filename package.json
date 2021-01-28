@@ -18,12 +18,12 @@
     "test": "tsc && node dist"
   },
   "dependencies": {
-    "@types/yargs": "^15.0.12",
     "dbus-next": "^0.9.1",
     "yargs": "^16.2.0"
   },
   "devDependencies": {
     "@types/node": "^14.14.22",
+    "@types/yargs": "^15.0.12",
     "@typescript-eslint/eslint-plugin": "^4.14.1",
     "@typescript-eslint/parser": "^4.14.1",
     "eslint": "^7.18.0",
