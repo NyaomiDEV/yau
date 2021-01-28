@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Name=Pinkpill
+Comment=Minimal update checker daemon
+TryExec=pinkpill
+Exec=pinkpill
+Icon=update-low
+Terminal=false
+Type=Application
+Categories=System;
+Keywords=updates;pinkpill;pill;aur;update;
+X-GNOME-UsesNotifications=true

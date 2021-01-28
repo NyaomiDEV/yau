@@ -12,6 +12,8 @@ import Notifier from "./notifier";
 import UpdateChecker from "./update_checker";
 import Config from "./config";
 import { name } from "../package.json";
+import { Variant } from "dbus-next";
+import { basename } from "path";
 
 let notifier: Notifier;
 let capabilities: string[];
@@ -54,11 +56,11 @@ async function tick(): Promise<void>{
 		);
 		console.log("[!] Sending notification!");
 		let id = await notifier.notify({
-			appName: "Software updates",
+			appName: "pinkpill",
 			replacesId: 0,
 			icon: "update-low",
 			summary: "Updates available!",
-			body: `${updatablePackages.length} packages can be updated.`,
+			body: `<b>${updatablePackages.length}</b> package${updatablePackages.length > 1 ? "s" : ""} can be updated.`,
 			actions: (capabilities.includes("actions")
 				?   [
 						{
@@ -69,7 +71,13 @@ async function tick(): Promise<void>{
 				:   []
 			)
 			,
-			hints: {},
+			hints: {
+				"urgency": new Variant("y", 1),
+				"category": new Variant("s", "device"),
+				"desktop-entry": new Variant("s", "pinkpill"),
+				"x-kde-origin-name": new Variant("s", basename(Config.getInstance().aurHelperBinary)),
+				"x-kde-display-appname": new Variant("s", "Software updates")
+			},
 			timeout: 1000 * Config.getInstance().notificationDurationSeconds
 		});
 		console.log(`[!] Update notification sent with ID: ${id}`);
