@@ -11,23 +11,34 @@ import { hideBin } from "yargs/helpers";
 import Notifier from "./notifier";
 import UpdateChecker from "./update_checker";
 import Config from "./config";
+import { name } from "../package.json";
 
 let notifier: Notifier;
+let capabilities: string[];
+
+process.title = name;
 
 async function daemon(): Promise<void>{
 	notifier = await Notifier.new();
+	capabilities = await notifier.getCapabilities();
 
-	notifier.on("action-invoked", (signal) => {
-		switch(signal.actionKey){
-			case "update":
-				console.log("[!] Update action received");
-				UpdateChecker.update();
-				break;
-		}
-	});
+	if(capabilities.includes("actions")){
+		notifier.on("action-invoked", (signal) => {
+			switch (signal.actionKey) {
+				case "update":
+					console.log("[!] Update action received");
+					UpdateChecker.update();
+					break;
+			}
+		});
+	}
 
-	tick();
-	setInterval(tick, 1000 * Config.getInstance().checkIntervalSeconds);
+	console.log("[!] Warming up...");
+	setTimeout(() => {
+		tick();
+		setInterval(tick, 1000 * Config.getInstance().checkIntervalSeconds);
+	},
+	1000 * Config.getInstance().warmupSeconds);
 }
 
 async function tick(): Promise<void>{
@@ -48,10 +59,16 @@ async function tick(): Promise<void>{
 			icon: "update-low",
 			summary: "Updates available!",
 			body: `${updatablePackages.length} packages can be updated.`,
-			actions: [{
-				name: "Update",
-				key: "update"
-			}],
+			actions: (capabilities.includes("actions")
+				?   [
+						{
+							name: "Update",
+							key: "update"
+						}
+					]
+				:   []
+			)
+			,
 			hints: {},
 			timeout: 1000 * Config.getInstance().notificationDurationSeconds
 		});
@@ -66,7 +83,7 @@ const argv = yargs(hideBin(process.argv)).argv;
 
 if(argv["extract-config"]){
 	Config.getInstance();
-	console.log("[!] Configurations are now available (or updated) at $HOME/.config/pinkpill/config.json");
+	console.log(`[!] Configurations are now available (or updated) at $HOME/.config/${name}/config.json`);
 	process.exit();
 }
 

@@ -10,6 +10,7 @@ import { dirname, resolve } from "path";
 import { name } from "../package.json";
 
 type ConfigType = {
+	warmupSeconds: number,
 	checkIntervalSeconds: number,
 	notificationDurationSeconds: number,
 	aurHelperBinary: string,
@@ -21,6 +22,7 @@ type ConfigType = {
 }
 
 const defaultConfig: ConfigType = {
+	warmupSeconds: 30,
 	checkIntervalSeconds: 60 * 60,
 	notificationDurationSeconds: 10,
 	aurHelperBinary: "/usr/bin/yay",
@@ -63,6 +65,10 @@ export default class Config implements ConfigType {
 		return Config.prototype._instance as Config;
 	}
 
+	public get warmupSeconds(): number{
+		return this.config.warmupSeconds;
+	}
+
 	public get checkIntervalSeconds(): number{
 		return this.config.checkIntervalSeconds;
 	}
@@ -71,27 +77,27 @@ export default class Config implements ConfigType {
 		return this.config.notificationDurationSeconds;
 	}
 
-	public get aurHelperBinary(): string {
+	public get aurHelperBinary(): string{
 		return this.config.aurHelperBinary;
 	}
 
-	public get sudoBinary(): string {
+	public get sudoBinary(): string{
 		return this.config.sudoBinary;
 	}
 
-	public get pacmanBinary(): string {
+	public get pacmanBinary(): string{
 		return this.config.pacmanBinary;
 	}
 
-	public get terminalBinary(): string {
+	public get terminalBinary(): string{
 		return this.config.terminalBinary;
 	}
 
-	public get Syy(): boolean {
+	public get Syy(): boolean{
 		return this.config.Syy;
 	}
 
-	public get updateDatabase(): boolean {
+	public get updateDatabase(): boolean{
 		return this.config.updateDatabase;
 	}
 }

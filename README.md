@@ -40,6 +40,7 @@ Configuration values are self explanatory.
 
 ```json
 {
+	"warmupSeconds": 30,                /* How many seconds to wait before checking for updates the first time */
 	"checkIntervalSeconds": 3600,       /* Interval between checks (in seconds) */
 	"notificationDurationSeconds": 10,  /* Interval for which the notification is visible (in seconds) */
 	"aurHelperBinary": "/usr/bin/yay",  /* Full path to the AUR helper binary */
