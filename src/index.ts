@@ -43,6 +43,8 @@ async function daemon(): Promise<void>{
 	1000 * Config.getInstance().warmupSeconds);
 }
 
+let lastId = 0;
+
 async function tick(): Promise<void>{
 	console.log("[!] Tick!");
 	if(Config.getInstance().updateDatabase)
@@ -55,9 +57,9 @@ async function tick(): Promise<void>{
 			console.log(`[=] '${element.name}' updatable from version ${element.from} to version ${element.to}`)
 		);
 		console.log("[!] Sending notification!");
-		let id = await notifier.notify({
+		lastId = await notifier.notify({
 			appName: "pinkpill",
-			replacesId: 0,
+			replacesId: lastId,
 			icon: "update-low",
 			summary: "Updates available!",
 			body: `<b>${updatablePackages.length}</b> package${updatablePackages.length > 1 ? "s" : ""} can be updated.`,
@@ -80,7 +82,7 @@ async function tick(): Promise<void>{
 			},
 			timeout: 1000 * Config.getInstance().notificationDurationSeconds
 		});
-		console.log(`[!] Update notification sent with ID: ${id}`);
+		console.log(`[!] Update notification sent with ID: ${lastId}`);
 	}else
 		console.log("[!] No updates found");
 	
