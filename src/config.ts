@@ -13,24 +13,28 @@ type ConfigType = {
 	warmupSeconds: number,
 	checkIntervalSeconds: number,
 	notificationDurationSeconds: number,
+	snoozeDurationSeconds: number,
 	aurHelperBinary: string,
 	sudoBinary: string,
 	pacmanBinary: string,
 	terminalBinary: string,
 	Syy: boolean,
-	updateDatabase: boolean
+	updateDatabase: boolean,
+	discardSameUpdatesNotification: boolean
 }
 
 const defaultConfig: ConfigType = {
 	warmupSeconds: 30,
 	checkIntervalSeconds: 60 * 60,
 	notificationDurationSeconds: 10,
+	snoozeDurationSeconds: 60 * 60 * 5,
 	aurHelperBinary: "/usr/bin/yay",
 	sudoBinary: "/usr/bin/sudo",
 	pacmanBinary: "/usr/bin/pacman",
 	terminalBinary: "/usr/bin/xterm",
 	Syy: false,
-	updateDatabase: false
+	updateDatabase: false,
+	discardSameUpdatesNotification: true
 };
 
 export default class Config implements ConfigType {
@@ -77,6 +81,10 @@ export default class Config implements ConfigType {
 		return this.config.notificationDurationSeconds;
 	}
 
+	public get snoozeDurationSeconds(): number{
+		return this.config.snoozeDurationSeconds;
+	}
+
 	public get aurHelperBinary(): string{
 		return this.config.aurHelperBinary;
 	}
@@ -99,5 +107,9 @@ export default class Config implements ConfigType {
 
 	public get updateDatabase(): boolean{
 		return this.config.updateDatabase;
+	}
+
+	public get discardSameUpdatesNotification(): boolean{
+		return this.config.discardSameUpdatesNotification;
 	}
 }

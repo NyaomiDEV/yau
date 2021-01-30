@@ -14,22 +14,34 @@ import Config from "./config";
 import { name } from "../package.json";
 import { Variant } from "dbus-next";
 import { basename } from "path";
+import { UpdatablePackage } from "./update_checker/util";
+import { isDeepStrictEqual } from "util";
 
 let notifier: Notifier;
-let capabilities: string[];
+
+let status = {
+	capabilities: [] as string[],
+	snooze: false,
+	lastUpdatablePackages: [] as UpdatablePackage[],
+	lastNotificationID: 0
+};
 
 process.title = name;
 
 async function daemon(): Promise<void>{
 	notifier = await Notifier.new();
-	capabilities = await notifier.getCapabilities();
+	status.capabilities = await notifier.getCapabilities();
 
-	if(capabilities.includes("actions")){
+	if(status.capabilities.includes("actions")){
 		notifier.on("action-invoked", (signal) => {
 			switch (signal.actionKey) {
 				case "update":
 					console.log("[!] Update action received");
 					UpdateChecker.update();
+					break;
+				case "snooze":
+					status.snooze = true;
+					setTimeout(() => { status.snooze = false; }, 1000 * Config.getInstance().snoozeDurationSeconds);
 					break;
 			}
 		});
@@ -43,28 +55,34 @@ async function daemon(): Promise<void>{
 	1000 * Config.getInstance().warmupSeconds);
 }
 
-let lastId = 0;
-
 async function tick(): Promise<void>{
 	console.log("[!] Tick!");
 	if(Config.getInstance().updateDatabase)
 		await UpdateChecker.updateDatabase();
-	let updatablePackages = await UpdateChecker.checkPackages();
+	const updatablePackages = await UpdateChecker.checkPackages();
 
 	if(updatablePackages.length > 0){
 		console.log(`[!] Found ${updatablePackages.length} updates!`);
 		updatablePackages.forEach(element => 
 			console.log(`[=] '${element.name}' updatable from version ${element.from} to version ${element.to}`)
 		);
+
+		if(Config.getInstance().discardSameUpdatesNotification && isDeepStrictEqual(status.lastUpdatablePackages, updatablePackages))
+			return;
+		
 		console.log("[!] Sending notification!");
-		lastId = await notifier.notify({
+		status.lastNotificationID = await notifier.notify({
 			appName: "pinkpill",
-			replacesId: lastId,
+			replacesId: status.lastNotificationID,
 			icon: "update-low",
 			summary: "Updates available!",
 			body: `<b>${updatablePackages.length}</b> package${updatablePackages.length > 1 ? "s" : ""} can be updated.`,
-			actions: (capabilities.includes("actions")
+			actions: (status.capabilities.includes("actions")
 				?   [
+						{
+							name: "Snooze",
+							key: "snooze"
+						},
 						{
 							name: "Update",
 							key: "update"
@@ -82,7 +100,9 @@ async function tick(): Promise<void>{
 			},
 			timeout: 1000 * Config.getInstance().notificationDurationSeconds
 		});
-		console.log(`[!] Update notification sent with ID: ${lastId}`);
+
+		status.lastUpdatablePackages = updatablePackages;
+		console.log(`[!] Update notification sent with ID: ${status.lastNotificationID}`);
 	}else
 		console.log("[!] No updates found");
 	

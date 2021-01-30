@@ -12,7 +12,7 @@ export type UpdatablePackage = {
 	to: string
 }
 
-export function parseOutput(output: string): UpdatablePackage[]{
+export function parseQuOutput(output: string): UpdatablePackage[]{
 	let _out: UpdatablePackage[] = [];
 	for (let str of output.trim().split("\n").filter(Boolean)){
 		const _package = str.split(" -> ").join(" ").split(" ");

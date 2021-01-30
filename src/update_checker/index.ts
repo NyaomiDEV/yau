@@ -6,7 +6,7 @@
 
 import { spawn } from "child_process";
 import Config from "../config";
-import { executeInTerminal, parseOutput, UpdatablePackage } from "./util";
+import { executeInTerminal, parseQuOutput, UpdatablePackage } from "./util";
 
 export default class UpdateChecker {
 
@@ -49,7 +49,7 @@ export default class UpdateChecker {
 			});
 
 			child.on("close", () => {
-				resolve(parseOutput(buf.toString()));
+				resolve(parseQuOutput(buf.toString()));
 			});
 		});
 	}
