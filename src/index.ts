@@ -22,6 +22,8 @@ let notifier: Notifier;
 let status = {
 	capabilities: [] as string[],
 	snooze: false,
+	// eslint-disable-next-line no-undef
+	snoozeTimeout: undefined as undefined | NodeJS.Timeout,
 	lastUpdatablePackages: [] as UpdatablePackage[],
 	lastNotificationID: 0
 };
@@ -33,15 +35,73 @@ async function daemon(): Promise<void>{
 	status.capabilities = await notifier.getCapabilities();
 
 	if(status.capabilities.includes("actions")){
-		notifier.on("action-invoked", (signal) => {
+		notifier.on("action-invoked", async (signal) => {
 			switch (signal.actionKey) {
 				case "update":
 					console.log("[!] Update action received");
 					UpdateChecker.update();
 					break;
 				case "snooze":
+					console.log("[!] Snooze action received");
 					status.snooze = true;
-					setTimeout(() => { status.snooze = false; }, 1000 * Config.getInstance().snoozeDurationSeconds);
+					status.snoozeTimeout = setTimeout(() => { status.snooze = false; }, 1000 * Config.getInstance().snoozeDurationSeconds);
+					console.log("[!] Sending notification!");
+					status.lastNotificationID = await notifier.notify({
+						appName: "pinkpill",
+						replacesId: status.lastNotificationID,
+						icon: "notifications-disabled",
+						summary: "Snoozed",
+						body: `Update notifications won't be sent for the next ${Config.getInstance().snoozeDurationSeconds} seconds.`,
+						actions: (status.capabilities.includes("actions")
+							? [
+									{
+										name: "Snooze off",
+										key: "snoozeoff"
+									}
+								]
+							: []
+						)
+						,
+						hints: {
+							"urgency": new Variant("y", 1),
+							"category": new Variant("s", "device"),
+							"desktop-entry": new Variant("s", "pinkpill"),
+							"x-kde-display-appname": new Variant("s", "Software updates")
+						},
+						timeout: 1000 * Config.getInstance().notificationDurationSeconds
+					});
+					break;
+				case "snoozeoff":
+					console.log("[!] Snooze off action received");
+					if(typeof status.snoozeTimeout !== "undefined")
+						clearTimeout(status.snoozeTimeout);
+					delete status.snoozeTimeout;
+					status.snooze = false;
+					console.log("[!] Sending notification!");
+					status.lastNotificationID = await notifier.notify({
+						appName: "pinkpill",
+						replacesId: status.lastNotificationID,
+						icon: "notifications",
+						summary: "Notifications are enabled again",
+						body: "You will receive update notifications from the next scheduled check onwards.",
+						actions: (status.capabilities.includes("actions")
+							? [
+									{
+										name: "Snooze",
+										key: "snooze"
+									}
+								]
+							: []
+						)
+						,
+						hints: {
+							"urgency": new Variant("y", 1),
+							"category": new Variant("s", "device"),
+							"desktop-entry": new Variant("s", "pinkpill"),
+							"x-kde-display-appname": new Variant("s", "Software updates")
+						},
+						timeout: 1000 * Config.getInstance().notificationDurationSeconds
+					});
 					break;
 			}
 		});
@@ -57,6 +117,9 @@ async function daemon(): Promise<void>{
 
 async function tick(): Promise<void>{
 	console.log("[!] Tick!");
+
+	if(status.snooze) return;
+
 	if(Config.getInstance().updateDatabase)
 		await UpdateChecker.updateDatabase();
 	const updatablePackages = await UpdateChecker.checkPackages();

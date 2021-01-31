@@ -14,7 +14,7 @@
   "scripts": {
     "lint": "eslint src/ --ext .ts",
     "build": "tsc",
-    "pill": "yarn build && yarn global add file:$PWD/dist",
+    "pill": "yarn build && yarn global add file:$PWD/dist && mkdir -p $HOME/.local/share/applications && cp $PWD/pinkpill.desktop $HOME/.local/share/applications",
     "test": "tsc && node dist"
   },
   "dependencies": {
