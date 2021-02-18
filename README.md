@@ -10,7 +10,7 @@ Clicking the update button in the notification will spawn your terminal and from
 
 ## Installation
 
-You'll need `nodejs`, `yarn`, `pacman` (ofc), `sudo`, an AUR helper to get updates from (default is `yay`), a terminal emulator which accepts commands via the `-e` argument (default is `xterm`)
+You'll need `nodejs`, `yarn`, `fakeroot`, `pacman` (ofc), an AUR helper to get updates from (default is `yay`), a terminal emulator which accepts commands via the `-e` argument (default is `xterm`)
 
 ```
 yarn && yarn build && yarn global add file:$PWD/dist
@@ -24,9 +24,7 @@ If someone wants to make a PKGBUILD out of this, you're welcome to do so. PR it 
 
 ## Usage
 
-Make sure `sudo` won't ask you for your password when using `pacman -Sy` and `pacman -Syy` as the utility needs to call it silently to update Pacman's database and check for updates.
-
-Then, run `pinkpill --extract-config` to make the utility place its configuration file.
+Run `pinkpill --extract-config` to make the utility place its configuration file.
 
 Go edit the configuration file before running `pinkpill`!
 
@@ -40,15 +38,14 @@ Configuration values are self explanatory.
 
 ```json
 {
-	"warmupSeconds": 30,                /* How many seconds to wait before checking for updates the first time */
-	"checkIntervalSeconds": 3600,       /* Interval between checks (in seconds) */
-	"notificationDurationSeconds": 10,  /* Interval for which the notification is visible (in seconds) */
-	"aurHelperBinary": "/usr/bin/yay",  /* Full path to the AUR helper binary */
-	"sudoBinary": "/usr/bin/sudo",      /* Full path to the sudo binary */
-	"pacmanBinary": "/usr/bin/pacman",  /* Full path to the pacman binary */
-	"terminalBinary": "/usr/bin/xterm", /* Full path to the terminal emulator binary */
-	"Syy": false,                       /* Should the utility use -Syy when updating the database and updating the system? */
-	"updateDatabase": false             /* Should the utility call pacman to update the database? */
+	"warmupSeconds": 30,                   /* How many seconds to wait before checking for updates the first time */
+	"checkIntervalSeconds": 3600,          /* Interval between checks (in seconds) */
+	"notificationDurationSeconds": 10,     /* Interval for which the notification is visible (in seconds) */
+	"aurHelperBinary": "/usr/bin/yay",     /* Full path to the AUR helper binary */
+	"fakerootBinary": "/usr/bin/fakeroot", /* Full path to the sudo binary */
+	"pacmanBinary": "/usr/bin/pacman",     /* Full path to the pacman binary */
+	"terminalBinary": "/usr/bin/xterm",    /* Full path to the terminal emulator binary */
+	"Syy": false                           /* Should the utility use -Syy when updating the database and updating the system? */
 };
 ```
 
