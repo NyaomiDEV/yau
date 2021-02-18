@@ -32,3 +32,16 @@ export function executeInTerminal(terminalPath: string, command: string, args: r
 		["-e", command, ...args]
 	);
 }
+
+export function getConfFromPacman(conf: string): Promise<string> {
+	return new Promise(resolve => {
+		const c = spawn(
+			"pacman-conf",
+			[conf]
+		);
+
+		let data = Buffer.alloc(0);
+		c.stdout.on("data", chk => data = Buffer.concat([data, chk]));
+		c.on("close", () => resolve(data.toString().trim()));
+	});
+}

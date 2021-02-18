@@ -120,8 +120,7 @@ async function tick(): Promise<void>{
 
 	if(status.snooze) return;
 
-	if(Config.getInstance().updateDatabase)
-		await UpdateChecker.updateDatabase();
+	await UpdateChecker.updateDatabase();
 	const updatablePackages = await UpdateChecker.checkPackages();
 
 	if(updatablePackages.length > 0){
