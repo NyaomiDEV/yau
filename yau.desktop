@@ -1,12 +1,12 @@
 [Desktop Entry]
 Version=1.0
-Name=Pinkpill
+Name=yau
 Comment=Minimal update checker daemon
-TryExec=pinkpill
-Exec=pinkpill
+TryExec=yau
+Exec=yau
 Icon=update-low
 Terminal=false
 Type=Application
 Categories=System;
-Keywords=updates;pinkpill;pill;aur;update;
+Keywords=updates;yau;pill;aur;update;
 X-GNOME-UsesNotifications=true

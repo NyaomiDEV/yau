@@ -1,6 +1,22 @@
-# pinkpill
+# YAU - "Yet Another Updater" (previously known as `pinkpill`)
 
 Utility to periodically check for updates via your preferred AUR helper.
+
+## Premise
+
+**This updater was made in Node + TypeScript as a meme.**
+
+If you can run it, it will work fine.
+However, do not expect it to be light in resource usage, given that it runs on Node.
+
+If optimizations can be done I will be glad to make them, so that this package is viable to more and more people.
+
+I do plan to port this to another programming language that is compiled and better at handling CPU and memory than Node is; however, for that to happen, I need to learn it first. I am trying.
+
+Lastly DO NOT COMPLAIN about me using Node to write desktop daemons.
+It is not my fault if the standard library is mature enough to make them.
+
+Then again, I am doing this as a deliberate meme (and for personal usage, but again, it is viable for me to use Node for this kind of stuff as the impact on my PC is not there, really. If you are tight on RAM or processing power then look elsewhere for update checkers.)
 
 ## How it works
 
@@ -13,26 +29,22 @@ Clicking the update button in the notification will spawn your terminal and from
 You'll need `nodejs`, `yarn`, `fakeroot`, `pacman` (ofc), an AUR helper to get updates from (default is `yay`), a terminal emulator which accepts commands via the `-e` argument (default is `xterm`)
 
 ```
-yarn && yarn build && yarn global add file:$PWD/dist
-```
-or if you're really lazy
-```
-yarn && yarn pill
+yarn && yarn yau
 ```
 
 If someone wants to make a PKGBUILD out of this, you're welcome to do so. PR it then.
 
 ## Usage
 
-Run `pinkpill --extract-config` to make the utility place its configuration file.
+Run `yau --extract-config` to make the utility place its configuration file.
 
-Go edit the configuration file before running `pinkpill`!
+Go edit the configuration file before running `yau`!
 
-If you're all set, just add `pinkpill` to your autostart list.
+If you're all set, just add `yau` to your autostart list.
 
 ## Configuration
 
-The configuration file is located at `$HOME/.config/pinkpill/config.json`.
+The configuration file is located at `$HOME/.config/yau/config.json`.
 
 Configuration values are self explanatory.
 
@@ -71,8 +83,10 @@ License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at http://mozilla.org/MPL/2.0/.
 ```
 
-This project uses `TypedEventEmitter` by Cynthia K. Rey, which is licensed under the following license.
-
+```
+yarn && yarn build && yarn global add file:$PWD/dist
+```
+or if you're really lazy
 ```
 Copyright (c) 2021 Cynthia K. Rey, All rights reserved.
 

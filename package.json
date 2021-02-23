@@ -1,9 +1,9 @@
 {
-  "name": "pinkpill",
+  "name": "yau",
   "version": "1.2.0",
   "main": "src/index",
   "bin": {
-    "pinkpill": "src/index.js"
+    "yau": "src/index.js"
   },
   "license": "MPL-2.0",
   "author": {
@@ -14,7 +14,8 @@
   "scripts": {
     "lint": "eslint src/ --ext .ts",
     "build": "tsc",
-    "pill": "yarn build && yarn global add file:$PWD/dist && mkdir -p $HOME/.local/share/applications && cp $PWD/pinkpill.desktop $HOME/.local/share/applications",
+    "clean": "rm -rf dist",
+    "yau": "yarn clean; yarn build && yarn global add file:$PWD/dist && mkdir -p $HOME/.local/share/applications && cp $PWD/yau.desktop $HOME/.local/share/applications",
     "test": "tsc && node dist"
   },
   "dependencies": {
