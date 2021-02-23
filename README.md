@@ -42,8 +42,6 @@ Configuration values are self explanatory.
 	"checkIntervalSeconds": 3600,          /* Interval between checks (in seconds) */
 	"notificationDurationSeconds": 10,     /* Interval for which the notification is visible (in seconds) */
 	"aurHelperBinary": "/usr/bin/yay",     /* Full path to the AUR helper binary */
-	"fakerootBinary": "/usr/bin/fakeroot", /* Full path to the sudo binary */
-	"pacmanBinary": "/usr/bin/pacman",     /* Full path to the pacman binary */
 	"terminalBinary": "/usr/bin/xterm",    /* Full path to the terminal emulator binary */
 	"Syy": false                           /* Should the utility use -Syy when updating the database and updating the system? */
 };
@@ -55,7 +53,7 @@ Configuration values are self explanatory.
 
 ## License
 
-`pinkpill` is licensed under Mozilla Public License, version 2.0.
+This project is licensed under Mozilla Public License, version 2.0.
 
 ```
 This Source Code Form is subject to the terms of the Mozilla Public
@@ -64,6 +62,14 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 ```
 
 ## Third party licenses
+
+This project uses `dbus-notifier` which is licensed under Mozilla Public License, version 2.0.
+
+```
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this
+file, You can obtain one at http://mozilla.org/MPL/2.0/.
+```
 
 This project uses `TypedEventEmitter` by Cynthia K. Rey, which is licensed under the following license.
 
