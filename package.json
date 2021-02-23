@@ -1,6 +1,6 @@
 {
   "name": "pinkpill",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "main": "src/index",
   "bin": {
     "pinkpill": "src/index.js"
@@ -18,7 +18,7 @@
     "test": "tsc && node dist"
   },
   "dependencies": {
-    "dbus-next": "^0.9.1",
+    "dbus-notifier": "^1.0.1",
     "yargs": "^16.2.0"
   },
   "devDependencies": {

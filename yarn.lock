@@ -348,6 +348,13 @@ dbus-next@^0.9.1:
   optionalDependencies:
     abstract-socket "^2.0.0"
 
+dbus-notifier@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/dbus-notifier/-/dbus-notifier-1.0.1.tgz#5f85da077069a369558e9e0da8710099b9e6b187"
+  integrity sha512-5ujCvDvZIUyj575/gG0AQS+lZp+G1DdmUAWmpvx/jXFZecfA9ZAhwM2FkWThS50kgpU6Zb5dxlp/JtANFqPYRA==
+  dependencies:
+    dbus-next "^0.9.1"
+
 debug@^4.0.1, debug@^4.1.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.1.tgz#f0d229c505e0c6d8c49ac553d1b13dc183f6b2ee"

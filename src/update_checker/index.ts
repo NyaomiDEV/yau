@@ -10,8 +10,9 @@ import { executeInTerminal, getConfFromPacman, parseQuOutput, UpdatablePackage }
 import * as path from "path";
 import { promises as fs } from "fs";
 import { userInfo } from "os";
+import { name } from "../../package.json";
 
-export const DBPath = path.resolve("/", "tmp", "pinkpillDB-" + userInfo().uid);
+export const DBPath = path.resolve("/", "tmp", name + "DB-" + userInfo().uid);
 
 export default class UpdateChecker {
 
@@ -26,10 +27,10 @@ export default class UpdateChecker {
 		await fs.stat(path.resolve(DBPath, "local")).catch(async () => fs.symlink(path.resolve(await getConfFromPacman("DBPath"), "local"), path.resolve(DBPath, "local")));
 
 		return new Promise(resolve => {
-			console.log(`[!] Calling ${Config.getInstance().fakerootBinary} ${Config.getInstance().pacmanBinary} -Sy --dbpath ${DBPath}`);
+			console.log(`[!] Calling fakeroot -- pacman -Sy --dbpath ${DBPath}`);
 			let child = spawn(
-				Config.getInstance().fakerootBinary,
-				["--", Config.getInstance().pacmanBinary, "-Sy", "--dbpath", DBPath]
+				"fakeroot",
+				["--", "pacman", "-Sy", "--dbpath", DBPath]
 			);
 
 			child.stdout.on("data", chunk => process.stdout.write(chunk));

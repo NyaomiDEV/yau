@@ -15,8 +15,6 @@ type ConfigType = {
 	notificationDurationSeconds: number,
 	snoozeDurationSeconds: number,
 	aurHelperBinary: string,
-	fakerootBinary: string,
-	pacmanBinary: string,
 	terminalBinary: string,
 	Syy: boolean,
 	discardSameUpdatesNotification: boolean
@@ -28,8 +26,6 @@ const defaultConfig: ConfigType = {
 	notificationDurationSeconds: 10,
 	snoozeDurationSeconds: 60 * 60 * 5,
 	aurHelperBinary: "/usr/bin/yay",
-	fakerootBinary: "/usr/bin/fakeroot",
-	pacmanBinary: "/usr/bin/pacman",
 	terminalBinary: "/usr/bin/xterm",
 	Syy: false,
 	discardSameUpdatesNotification: true
@@ -85,14 +81,6 @@ export default class Config implements ConfigType {
 
 	public get aurHelperBinary(): string{
 		return this.config.aurHelperBinary;
-	}
-
-	public get fakerootBinary(): string{
-		return this.config.fakerootBinary;
-	}
-
-	public get pacmanBinary(): string{
-		return this.config.pacmanBinary;
 	}
 
 	public get terminalBinary(): string{
