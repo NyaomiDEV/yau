@@ -36,7 +36,7 @@ The configuration file is located at `$HOME/.config/pinkpill/config.json`.
 
 Configuration values are self explanatory.
 
-```json
+```js
 {
 	"warmupSeconds": 30,                   /* How many seconds to wait before checking for updates the first time */
 	"checkIntervalSeconds": 3600,          /* Interval between checks (in seconds) */
