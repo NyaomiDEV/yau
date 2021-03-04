@@ -21,6 +21,15 @@ export default class UpdateChecker {
 		executeInTerminal(Config.getInstance().terminalBinary, Config.getInstance().aurHelperBinary, [Config.getInstance().Syy ? "-Syyu" : "-Syu"]);
 	}
 
+	public static listPackagesInTerminal(packages: UpdatablePackage[]): Promise<number | null>{
+		let str = "Updatable packages\n\n";
+		for(const pack of packages)
+			str += `${pack.name}\nCurrent version: ${pack.from}\nUpdatable to version: ${pack.to}\n\n`;
+		
+		let terminalInstance = executeInTerminal(Config.getInstance().terminalBinary, "sh", ["-c", `echo "${str.split("\"").join("\\\"")}" | less`]);
+		return new Promise(resolve => terminalInstance.on("close", (code) => resolve(code)));
+	}
+
 	public static async updateDatabase(): Promise<void>{ // This one will always only update Pacman's DB
 		console.log(`[!] Ensuring temporary Pacman database path '${DBPath}'`);
 		await fs.stat(DBPath).catch(() => fs.mkdir(DBPath, { recursive: true }));

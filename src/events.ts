@@ -10,6 +10,7 @@ import Config from "./config";
 import { status } from "./status";
 import UpdateChecker from "./update_checker";
 import { name } from "../package.json";
+import { sendNotification } from ".";
 
 export function update(){
 	console.log("[!] Update action received");
@@ -78,4 +79,14 @@ export async function snoozeoff(notifier: Notifier){
 		},
 		timeout: 1000 * Config.getInstance().notificationDurationSeconds
 	});
+}
+
+export async function list(){
+	console.log("[!] List action received");
+
+	await UpdateChecker.listPackagesInTerminal(status.lastUpdatablePackages);
+
+	console.log("[!] Resending notification");
+
+	await sendNotification();
 }

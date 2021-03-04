@@ -16,7 +16,7 @@ import { Variant } from "dbus-next";
 import { basename } from "path";
 import { status } from "./status";
 import { isDeepStrictEqual } from "util";
-import { snooze, snoozeoff, update } from "./events";
+import { snooze, snoozeoff, update, list } from "./events";
 
 let notifier: Notifier;
 
@@ -31,6 +31,9 @@ async function daemon(): Promise<void>{
 			switch (signal.actionKey) {
 				case "update":
 					update();
+					break;
+				case "list":
+					list();
 					break;
 				case "snooze":
 					await snooze(notifier);
@@ -47,7 +50,7 @@ async function daemon(): Promise<void>{
 		tick();
 		setInterval(tick, 1000 * Config.getInstance().checkIntervalSeconds);
 	},
-	1000 * Config.getInstance().warmupSeconds);
+	!argv.warmup ? 0 : 1000 * Config.getInstance().warmupSeconds);
 }
 
 async function tick(): Promise<void>{
@@ -66,43 +69,53 @@ async function tick(): Promise<void>{
 
 		if(Config.getInstance().discardSameUpdatesNotification && isDeepStrictEqual(status.lastUpdatablePackages, updatablePackages))
 			return;
-		
-		console.log("[!] Sending notification!");
-		status.lastNotificationID = await notifier.notify({
-			appName: name,
-			replacesId: status.lastNotificationID,
-			icon: "update-low",
-			summary: "Updates available!",
-			body: `<b>${updatablePackages.length}</b> package${updatablePackages.length > 1 ? "s" : ""} can be updated.`,
-			actions: (status.capabilities.includes("actions")
-				?   [
-						{
-							name: "Snooze",
-							key: "snooze"
-						},
-						{
-							name: "Update",
-							key: "update"
-						}
-					]
-				:   []
-			)
-			,
-			hints: {
-				"urgency": new Variant("y", 1),
-				"category": new Variant("s", "device"),
-				"desktop-entry": new Variant("s", name),
-				"x-kde-origin-name": new Variant("s", basename(Config.getInstance().aurHelperBinary)),
-				"x-kde-display-appname": new Variant("s", "Software updates")
-			},
-			timeout: 1000 * Config.getInstance().notificationDurationSeconds
-		});
 
 		status.lastUpdatablePackages = updatablePackages;
-		console.log(`[!] Update notification sent with ID: ${status.lastNotificationID}`);
+
+		await sendNotification();
 	}else
 		console.log("[!] No updates found");
 	
+}
+
+export async function sendNotification(){
+	console.log("[!] Sending notification!");
+
+	status.lastNotificationID = await notifier.notify({
+		appName: name,
+		replacesId: status.lastNotificationID,
+		icon: "update-low",
+		summary: "Updates available!",
+		body: `<b>${status.lastUpdatablePackages.length}</b> package${status.lastUpdatablePackages.length > 1 ? "s" : ""} can be updated.`,
+		actions: (status.capabilities.includes("actions")
+			? [
+					{
+						name: "Snooze",
+						key: "snooze"
+					},
+					{
+						name: "List packages",
+						key: "list"
+					},
+					{
+						name: "Update",
+						key: "update"
+					}
+				]
+			: []
+		)
+		,
+		hints: {
+			"urgency": new Variant("y", 1),
+			"category": new Variant("s", "device"),
+			"desktop-entry": new Variant("s", name),
+			"x-kde-origin-name": new Variant("s", basename(Config.getInstance().aurHelperBinary)),
+			"x-kde-display-appname": new Variant("s", "Software updates")
+		},
+		timeout: 1000 * Config.getInstance().notificationDurationSeconds
+	});
+
+	console.log(`[!] Update notification sent with ID: ${status.lastNotificationID}`);
 }
 
 
