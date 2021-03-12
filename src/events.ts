@@ -19,8 +19,12 @@ export function update(){
 
 export async function snooze(notifier: Notifier){
 	console.log("[!] Snooze action received");
+
+	if(status.snooze) return;
+
 	status.snooze = true;
 	status.snoozeTimeout = setTimeout(() => { status.snooze = false; }, 1000 * Config.getInstance().snoozeDurationSeconds);
+
 	console.log("[!] Sending notification!");
 	status.lastSnoozeNotificationID = await notifier.notify({
 		appName: name,
@@ -50,10 +54,14 @@ export async function snooze(notifier: Notifier){
 
 export async function snoozeoff(notifier: Notifier){
 	console.log("[!] Snooze off action received");
-	if (typeof status.snoozeTimeout !== "undefined")
+
+	if(!status.snooze) return;
+
+	if(typeof status.snoozeTimeout !== "undefined")
 		clearTimeout(status.snoozeTimeout);
 	delete status.snoozeTimeout;
 	status.snooze = false;
+
 	console.log("[!] Sending notification!");
 	status.lastSnoozeNotificationID = await notifier.notify({
 		appName: name,

@@ -9,6 +9,7 @@ import { UpdatablePackage } from "./update_checker/util";
 export const status = {
 	capabilities: [] as string[],
 	snooze: false,
+	isTicking: false,
 	// eslint-disable-next-line no-undef
 	snoozeTimeout: undefined as undefined | NodeJS.Timeout,
 	lastUpdatablePackages: [] as UpdatablePackage[],
