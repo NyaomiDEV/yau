@@ -22,11 +22,11 @@ export default class UpdateChecker {
 	}
 
 	public static listPackagesInTerminal(packages: UpdatablePackage[]): Promise<number | null>{
-		let str = "Updatable packages\n\n";
+		let str = "\u001B[1;37mUpdatable packages\u001B[0m\n\n";
 		for(const pack of packages)
-			str += `${pack.name}\nCurrent version: ${pack.from}\nUpdatable to version: ${pack.to}\n\n`;
+			str += `\u001B[1;37m${pack.name}\u001B[0m\nCurrent version: \u001B[0;91m${pack.from}\u001B[0m\nUpdatable to version: \u001B[0;92m${pack.to}\u001B[0m\n\n`;
 		
-		let terminalInstance = executeInTerminal(Config.getInstance().terminalBinary, "sh", ["-c", `echo "${str.split("\"").join("\\\"")}" | less`]);
+		let terminalInstance = executeInTerminal(Config.getInstance().terminalBinary, "sh", ["-c", `echo -e "${str.split("\"").join("\\\"").trim()}" | less -R --use-color --mouse`]);
 		return new Promise(resolve => terminalInstance.on("close", (code) => resolve(code)));
 	}
 
